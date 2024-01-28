@@ -9,7 +9,7 @@ lerna-debug.log*
 
 
 # Runtime data
-src/routes/src/files
+src/routes/files
 uploads
 node_modules
 dist
