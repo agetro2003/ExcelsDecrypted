@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Excel File</title>
+</head>
+<body>
+    <h1>Upload Excel File</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" name="archivo">
+        <button type="submit">Upload</button>
+    </form>
+    <h3 id="winner"></h3>
+    <script>
+    const winner = document.getElementById('winner');
+    document.getElementById('uploadForm').addEventListener('submit', async function(event) {
+    event.preventDefault();
+
+    const formData = new FormData();
+    const fileInput = document.getElementById('fileInput');
+    formData.append('archivo', fileInput.files[0]);
+
+    try {
+        const response = await fetch('https://localhost:8000/api/upload', {
+            method: 'POST',
+            body: formData
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al cargar el archivo');
+        }
+
+        const result = await response.json();
+        if(result.length > 1){
+            result.forEach(element => {
+                winner.innerHTML += element.Nombre + '<br>';
+            })
+            winner.innerHTML += 'Empatando con ' + result[0].Precio;
+        } else if(result.length == 1){
+            winner.innerHTML = result[0].Nombre;
+        }
+      
+        console.log(result); // Manejar la respuesta del servidor
+    } catch (error) {
+        console.error('Error:', error);
+    }
+});
+    </script>
+</body>
+</html>
